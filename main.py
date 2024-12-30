@@ -1,6 +1,8 @@
 import os
 import time
 import tweepy
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
 # Authentifizierung
 API_KEY = os.getenv("API_KEY")
@@ -19,6 +21,18 @@ nutzer_liste = [
     "Dupicassoo", "BaghiraOf", "GerMuscle", "kinkytwink24", "marcust088",
     "Snkboy44", "Stony11zoll", "kinkysub_berlin"
 ]
+
+# Dummy HTTP-Server, um Render zufrieden zu stellen
+class DummyHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Dummy server running.")
+
+def start_dummy_server():
+    server = HTTPServer(("0.0.0.0", 10000), DummyHandler)
+    print("Dummy server läuft auf Port 10000...")
+    server.serve_forever()
 
 # Funktion: Antworte auf den neuesten Tweet eines Nutzers
 def antworte_auf_tweet(nutzername, antwort_text, bild_pfad=None):
@@ -47,8 +61,8 @@ def antworte_auf_tweet(nutzername, antwort_text, bild_pfad=None):
     except Exception as e:
         print(f"Fehler beim Antworten auf @{nutzername}: {e}")
 
-# Hauptprogramm
-if __name__ == "__main__":
+# Twitter-Bot-Funktionalität
+def start_twitter_bot():
     antwort_text = "Hey geiler Style, würd gern beim nächsten Mal dabei sein! Check my profil and DM me for my OF 😊 "  # Antworttext
     bild_pfad = "easttwunk_style.jpg"  # Optional: Pfad zum Bild
 
@@ -58,3 +72,13 @@ if __name__ == "__main__":
         # Warten, um API-Limits einzuhalten
         print("Warte 15 Minuten, um API-Limits einzuhalten...")
         time.sleep(900)  # 15 Minuten Pause
+
+# Hauptprogramm
+if __name__ == "__main__":
+    # Dummy-Server in einem separaten Thread starten
+    dummy_thread = threading.Thread(target=start_dummy_server)
+    dummy_thread.daemon = True
+    dummy_thread.start()
+
+    # Twitter-Bot starten
+    start_twitter_bot()
