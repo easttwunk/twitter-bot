@@ -14,14 +14,6 @@ auth = tweepy.OAuthHandler(API_KEY, API_SECRET_KEY)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 api = tweepy.API(auth)
 
-# Liste der Nutzer, auf deren Posts geantwortet werden soll
-nutzer_liste = [
-    "iamleocollins", "choker_max", "Ronnbottom", "KingPupSkin1", "hot_germanguy",
-    "StevenLee3X", "Pitty4u1", "TillNeuSN", "iamleocollins", "HammerHeinrich",
-    "Dupicassoo", "BaghiraOf", "GerMuscle", "kinkytwink24", "marcust088",
-    "Snkboy44", "Stony11zoll", "kinkysub_berlin"
-]
-
 # Dummy HTTP-Server, um Render zufrieden zu stellen
 class DummyHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -38,44 +30,38 @@ def start_dummy_server():
     print("Dummy server läuft auf Port 10000...")
     server.serve_forever()
 
-# Funktion: Antworte auf den neuesten Tweet eines Nutzers
-def antworte_auf_tweet(nutzername, antwort_text, bild_pfad=None):
+# Funktion: Poste eine Antwort auf bekannte Tweet-IDs
+def antworte_auf_tweet(tweet_id, antwort_text, bild_pfad=None):
     try:
-        # Abrufen der letzten Tweets des Nutzers
-        tweets = api.user_timeline(screen_name=nutzername, count=1)
-        for tweet in tweets:
-            print(f"Gefundener Tweet von @{nutzername}: {tweet.text}")
-
-            # Antwort senden
-            if bild_pfad:
-                media = api.media_upload(bild_pfad)
-                api.update_status(
-                    status=antwort_text,
-                    in_reply_to_status_id=tweet.id,
-                    auto_populate_reply_metadata=True,
-                    media_ids=[media.media_id]
-                )
-            else:
-                api.update_status(
-                    status=antwort_text,
-                    in_reply_to_status_id=tweet.id,
-                    auto_populate_reply_metadata=True
-                )
-            print(f"Antwort gesendet an @{nutzername}!")
-    except tweepy.TweepError as e:
-        print(f"Fehler beim Antworten auf @{nutzername}: {e}")
+        # Antwort senden
+        if bild_pfad:
+            media = api.media_upload(bild_pfad)
+            api.update_status(
+                status=antwort_text,
+                in_reply_to_status_id=tweet_id,
+                auto_populate_reply_metadata=True,
+                media_ids=[media.media_id]
+            )
+        else:
+            api.update_status(
+                status=antwort_text,
+                in_reply_to_status_id=tweet_id,
+                auto_populate_reply_metadata=True
+            )
+        print(f"Antwort gesendet auf Tweet-ID {tweet_id}!")
+    except tweepy.TweepyException as e:
+        print(f"Fehler beim Antworten: {e}")
     except Exception as e:
         print(f"Allgemeiner Fehler: {e}")
 
 # Twitter-Bot-Funktionalität
 def start_twitter_bot():
-    antwort_text = "Hey geiler Style, würd gern beim nächsten Mal dabei sein! Check my profil and DM me for my OF 😊 "  # Antworttext
+    antwort_text = "Hey, ich bin ein Bot! 😊"  # Antworttext
     bild_pfad = "easttwunk_style.jpg"  # Optional: Pfad zum Bild
+    tweet_ids = ["1234567890123456789", "9876543210987654321"]  # Bekannte Tweet-IDs
 
-    for nutzer in nutzer_liste:
-        antworte_auf_tweet(nutzer, antwort_text, bild_pfad)
-
-        # Warten, um API-Limits einzuhalten
+    for tweet_id in tweet_ids:
+        antworte_auf_tweet(tweet_id, antwort_text, bild_pfad)
         print("Warte 15 Minuten, um API-Limits einzuhalten...")
         time.sleep(900)  # 15 Minuten Pause
 
