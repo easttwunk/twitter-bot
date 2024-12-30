@@ -1,2 +1,2 @@
-# twitter-bot
-A bot to reply to tweets automatically
+# Twitter Bot
+Ein einfacher Bot, der automatisch auf Tweets antwortet.
