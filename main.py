@@ -8,8 +8,8 @@ ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
 ACCESS_TOKEN_SECRET = os.getenv("ACCESS_TOKEN_SECRET")
 
 # Verbindung mit der Twitter-API herstellen
-auth = tweepy.OAuthHandler(JJcKfRWumygxBP30eCRkMFLXW, 2YI0zQ67OKJEKqEeKapVkxMDqOhgh47Boga9YDUT6i8NTFgY7Y)
-auth.set_access_token(1608430728630370304-5riCdvr6xs5lvKmhFHWvHxpAxxGMnP, K2mFGKc8EohUQDvH2D3yVileiiKZNEpeINHHPC1SB2MQ7)
+auth = tweepy.OAuthHandler(API_KEY, API_SECRET_KEY)
+auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 api = tweepy.API(auth)
 
 # Funktion: Antwort auf einen Tweet
