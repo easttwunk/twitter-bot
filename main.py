@@ -29,6 +29,10 @@ class DummyHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(b"Dummy server running.")
 
+    def do_HEAD(self):
+        self.send_response(200)
+        self.end_headers()
+
 def start_dummy_server():
     server = HTTPServer(("0.0.0.0", 10000), DummyHandler)
     print("Dummy server läuft auf Port 10000...")
@@ -58,8 +62,10 @@ def antworte_auf_tweet(nutzername, antwort_text, bild_pfad=None):
                     auto_populate_reply_metadata=True
                 )
             print(f"Antwort gesendet an @{nutzername}!")
-    except Exception as e:
+    except tweepy.TweepError as e:
         print(f"Fehler beim Antworten auf @{nutzername}: {e}")
+    except Exception as e:
+        print(f"Allgemeiner Fehler: {e}")
 
 # Twitter-Bot-Funktionalität
 def start_twitter_bot():
